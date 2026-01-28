@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BOW Sports Capital - Learn economic decision-making through real sports team management">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>BOW Sports Capital - GM Decision Game</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/themes.css">
+
+    <!-- Preload fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <style>
+        /* Critical CSS for initial load */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .screen.hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- ================================
+         WELCOME SCREEN
+    ================================ -->
+    <section id="welcome-screen" class="screen active">
+        <div class="container">
+            <div class="card">
+                <div class="welcome-logo">🏆</div>
+                <h1 class="welcome-title">BOW Sports Capital</h1>
+                <p class="welcome-subtitle">
+                    Think you can run a professional sports team?<br>
+                    Make the decisions. Manage the money. Build a dynasty.
+                </p>
+
+                <div class="welcome-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">🏀</span>
+                        <div class="feature-text">
+                            <h4>NBA: Lakers</h4>
+                            <p>Manage LeBron's final years and championship window</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">⚾</span>
+                        <div class="feature-text">
+                            <h4>MLB: Red Sox</h4>
+                            <p>Balance free agent signings with prospect development</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🏈</span>
+                        <div class="feature-text">
+                            <h4>NFL: Chiefs</h4>
+                            <p>Build around Mahomes and manage salary cap</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="welcome-info">
+                    <h3>The Framework</h3>
+                    <p>Every GM decision comes down to three strategies:</p>
+                    <div class="strategy-preview">
+                        <div class="strategy-item accelerate">
+                            <strong>ACCELERATE</strong> - Go all-in on winning NOW
+                        </div>
+                        <div class="strategy-item smooth">
+                            <strong>SMOOTH</strong> - Balance today and tomorrow
+                        </div>
+                        <div class="strategy-item rebuild">
+                            <strong>REBUILD</strong> - Invest in the future
+                        </div>
+                    </div>
+                </div>
+
+                <div class="welcome-challenge">
+                    <p><strong>9 decisions.</strong> 3 teams. 3 leagues.</p>
+                    <p>Score 33+ points to unlock your <strong>200 XP claim code!</strong></p>
+                </div>
+
+                <button id="start-game" class="btn btn-accent btn-large">
+                    Start Your GM Career
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================
+         GAME SCREEN
+    ================================ -->
+    <section id="game-screen" class="screen hidden">
+        <div class="container">
+            <!-- Team Header -->
+            <header class="team-header">
+                <div id="team-logo" class="team-logo">🏀</div>
+                <div class="team-info">
+                    <h2 id="team-name" class="team-name">Team Name</h2>
+                    <span id="team-league" class="team-league">LEAGUE</span>
+                    <p id="team-situation" class="team-situation">Team situation description</p>
+                    <p id="salary-cap-display" class="salary-cap-display">Salary Cap Info</p>
+                </div>
+            </header>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar-wrapper">
+                    <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="progress-info">
+                    <span id="progress-text">Decision 1 of 9</span>
+                    <span id="current-score">Score: 0</span>
+                </div>
+            </div>
+
+            <!-- Scenario Card -->
+            <div class="scenario-card card">
+                <h3 id="scenario-title" class="scenario-title">Scenario Title</h3>
+                <p id="scenario-context" class="scenario-context">
+                    Scenario context and description will appear here...
+                </p>
+
+                <div id="choices-container" class="choices-container">
+                    <!-- Choices will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================
+         FEEDBACK SCREEN
+    ================================ -->
+    <section id="feedback-screen" class="screen hidden">
+        <div class="container">
+            <div class="feedback-card card">
+                <h2 id="feedback-title" class="feedback-title">Decision Result</h2>
+
+                <div id="feedback-type" class="feedback-type">Strategy Type</div>
+
+                <div id="feedback-consequence" class="feedback-consequence">
+                    Consequence description...
+                </div>
+
+                <p id="feedback-explanation" class="feedback-explanation">
+                    Educational explanation...
+                </p>
+
+                <div id="feedback-score" class="feedback-score">+5 points</div>
+
+                <button id="next-scenario" class="btn btn-primary btn-large">
+                    Next Decision →
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================
+         RESULTS SCREEN
+    ================================ -->
+    <section id="results-screen" class="screen hidden">
+        <div class="container">
+            <div class="results-card card">
+                <div class="results-header">
+                    <h2 class="results-title">🏆 Game Complete!</h2>
+
+                    <div class="score-display">
+                        <div class="score-circle">
+                            <span id="final-score" class="final-score">0 / 45</span>
+                        </div>
+                        <div class="score-details">
+                            <div id="score-percentage" class="score-percentage">0%</div>
+                            <div id="efficiency-rating" class="efficiency-rating">GM Rating</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Claim Code Section (shown if score >= threshold) -->
+                <div id="claim-code-section" class="claim-code-section hidden">
+                    <h3>🎉 Congratulations! You Unlocked the Code!</h3>
+                    <p>You've proven yourself as an elite GM. Here's your reward:</p>
+                    <div id="claim-code" class="claim-code">BOWCAPITAL2024</div>
+                    <p class="xp-reward">Redeem for <strong>200 XP</strong> in BOW!</p>
+                </div>
+
+                <!-- Answers Breakdown -->
+                <div class="answers-breakdown">
+                    <h3>📊 Your Decisions</h3>
+                    <div id="answers-breakdown">
+                        <!-- Breakdown items will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Framework Summary -->
+                <div class="framework-summary">
+                    <h3>📚 The Framework</h3>
+                    <div id="framework-summary" class="framework-cards">
+                        <!-- Framework cards will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Play Again -->
+                <div class="play-again-section">
+                    <button id="play-again" class="btn btn-accent btn-large">
+                        🔄 Play Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="js/teams-data.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
