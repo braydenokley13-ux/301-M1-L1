@@ -361,9 +361,281 @@ const SCORING = {
     totalQuestions: 9,
     maxPossibleScore: 45,
     unlockThreshold: 33, // ~73% efficiency (was 11 out of 15 in original)
-    claimCode: "BOWCAPITAL2024",
+    baseClaimCode: "BOW", // Base for dynamic code generation
     xpReward: 200
 };
+
+// GM Archetypes based on strategy preferences
+const GM_ARCHETYPES = {
+    // Dominant strategy archetypes
+    accelerator: {
+        id: "accelerator",
+        name: "The Closer",
+        emoji: "🔥",
+        description: "You're a win-now GM who believes in maximizing championship windows. You'll pay any price for glory.",
+        strength: "Capitalizing on prime talent windows",
+        weakness: "Can mortgage the future for fleeting success",
+        famousGM: "Bob Myers (Warriors dynasty)",
+        codePrefix: "ACCEL"
+    },
+    smoother: {
+        id: "smoother",
+        name: "The Architect",
+        emoji: "📐",
+        description: "You're a balanced GM who builds sustainable success. You compete while maintaining flexibility.",
+        strength: "Long-term organizational health",
+        weakness: "May miss optimal championship windows",
+        famousGM: "Masai Ujiri (Raptors)",
+        codePrefix: "SMOOTH"
+    },
+    rebuilder: {
+        id: "rebuilder",
+        name: "The Visionary",
+        emoji: "🔮",
+        description: "You're a future-focused GM who plays the long game. You value assets and patient development.",
+        strength: "Asset accumulation and value extraction",
+        weakness: "Fans may lose patience before the payoff",
+        famousGM: "Sam Hinkie (Process)",
+        codePrefix: "REBUILD"
+    },
+    // Mixed strategy archetypes
+    balanced: {
+        id: "balanced",
+        name: "The Pragmatist",
+        emoji: "⚖️",
+        description: "You adapt your strategy to each situation. No rigid philosophy - just smart decisions.",
+        strength: "Contextual decision-making",
+        weakness: "May lack a clear organizational identity",
+        famousGM: "Brian Cashman (Yankees)",
+        codePrefix: "FLEX"
+    },
+    aggressive_balanced: {
+        id: "aggressive_balanced",
+        name: "The Opportunist",
+        emoji: "🎯",
+        description: "You lean aggressive but know when to hold back. You strike when the iron is hot.",
+        strength: "Recognizing and seizing opportunities",
+        weakness: "Can overreact to short-term results",
+        famousGM: "Daryl Morey (Rockets/76ers)",
+        codePrefix: "STRIKE"
+    },
+    conservative_balanced: {
+        id: "conservative_balanced",
+        name: "The Steward",
+        emoji: "🛡️",
+        description: "You protect assets but aren't afraid to invest when needed. Stability with strategic aggression.",
+        strength: "Organizational stability and financial health",
+        weakness: "May be too risk-averse at critical moments",
+        famousGM: "Theo Epstein (Cubs rebuild)",
+        codePrefix: "GUARD"
+    }
+};
+
+// Strategy consistency scoring
+const CONSISTENCY_BONUSES = {
+    perfect: { threshold: 1.0, bonus: 5, label: "Perfect Consistency" },  // All same strategy
+    high: { threshold: 0.75, bonus: 3, label: "High Consistency" },       // 7+ of 9 same
+    moderate: { threshold: 0.55, bonus: 1, label: "Moderate Consistency" }, // 5-6 of 9 same
+    low: { threshold: 0, bonus: 0, label: "Adaptive Style" }              // Mixed approach
+};
+
+/**
+ * Calculate strategy distribution from answers
+ * @param {Array} answers - Array of answer objects with type property
+ * @returns {Object} Strategy counts and percentages
+ */
+function calculateStrategyDistribution(answers) {
+    const counts = { accelerate: 0, smooth: 0, rebuild: 0 };
+    answers.forEach(answer => {
+        if (counts.hasOwnProperty(answer.type)) {
+            counts[answer.type]++;
+        }
+    });
+
+    const total = answers.length;
+    const percentages = {
+        accelerate: total > 0 ? (counts.accelerate / total) * 100 : 0,
+        smooth: total > 0 ? (counts.smooth / total) * 100 : 0,
+        rebuild: total > 0 ? (counts.rebuild / total) * 100 : 0
+    };
+
+    return { counts, percentages, total };
+}
+
+/**
+ * Determine GM archetype based on strategy distribution
+ * @param {Object} distribution - Result from calculateStrategyDistribution
+ * @returns {Object} GM archetype object
+ */
+function determineGMArchetype(distribution) {
+    const { counts, total } = distribution;
+
+    // Find dominant strategy
+    const strategies = ['accelerate', 'smooth', 'rebuild'];
+    let dominant = strategies[0];
+    let maxCount = counts[dominant];
+
+    strategies.forEach(strategy => {
+        if (counts[strategy] > maxCount) {
+            dominant = strategy;
+            maxCount = counts[strategy];
+        }
+    });
+
+    const dominantRatio = maxCount / total;
+
+    // Strong preference (60%+ = 6+ of 9 decisions)
+    if (dominantRatio >= 0.6) {
+        if (dominant === 'accelerate') return GM_ARCHETYPES.accelerator;
+        if (dominant === 'smooth') return GM_ARCHETYPES.smoother;
+        if (dominant === 'rebuild') return GM_ARCHETYPES.rebuilder;
+    }
+
+    // Check for aggressive vs conservative balance
+    const aggressiveCount = counts.accelerate;
+    const conservativeCount = counts.rebuild;
+    const balancedCount = counts.smooth;
+
+    // Lean aggressive (more accelerate than rebuild)
+    if (aggressiveCount > conservativeCount && aggressiveCount >= 3) {
+        return GM_ARCHETYPES.aggressive_balanced;
+    }
+
+    // Lean conservative (more rebuild than accelerate)
+    if (conservativeCount > aggressiveCount && conservativeCount >= 3) {
+        return GM_ARCHETYPES.conservative_balanced;
+    }
+
+    // True balanced (smooth dominant or no clear lean)
+    return GM_ARCHETYPES.balanced;
+}
+
+/**
+ * Calculate consistency bonus based on strategy pattern
+ * @param {Object} distribution - Result from calculateStrategyDistribution
+ * @returns {Object} Consistency info with bonus and label
+ */
+function calculateConsistencyBonus(distribution) {
+    const { counts, total } = distribution;
+    const maxCount = Math.max(counts.accelerate, counts.smooth, counts.rebuild);
+    const ratio = maxCount / total;
+
+    if (ratio >= CONSISTENCY_BONUSES.perfect.threshold) {
+        return CONSISTENCY_BONUSES.perfect;
+    } else if (ratio >= CONSISTENCY_BONUSES.high.threshold) {
+        return CONSISTENCY_BONUSES.high;
+    } else if (ratio >= CONSISTENCY_BONUSES.moderate.threshold) {
+        return CONSISTENCY_BONUSES.moderate;
+    }
+    return CONSISTENCY_BONUSES.low;
+}
+
+/**
+ * Calculate team-specific performance scores
+ * @param {Array} answers - Array of answer objects
+ * @returns {Object} Performance by team
+ */
+function calculateTeamPerformance(answers) {
+    const teamPerf = {};
+
+    answers.forEach(answer => {
+        const teamKey = answer.team.toLowerCase().replace(/\s+/g, '-');
+        if (!teamPerf[teamKey]) {
+            teamPerf[teamKey] = { score: 0, maxScore: 0, decisions: 0 };
+        }
+        teamPerf[teamKey].score += answer.score;
+        teamPerf[teamKey].maxScore += answer.maxScore;
+        teamPerf[teamKey].decisions++;
+    });
+
+    // Calculate percentages
+    Object.keys(teamPerf).forEach(team => {
+        const perf = teamPerf[team];
+        perf.percentage = Math.round((perf.score / perf.maxScore) * 100);
+        perf.rating = perf.percentage >= 93 ? 'S' :
+                      perf.percentage >= 80 ? 'A' :
+                      perf.percentage >= 67 ? 'B' :
+                      perf.percentage >= 53 ? 'C' : 'D';
+    });
+
+    return teamPerf;
+}
+
+/**
+ * Generate dynamic claim code based on game performance
+ * @param {Object} gameData - Object containing totalScore, answers, etc.
+ * @returns {Object} Claim code info with code and breakdown
+ */
+function generateDynamicClaimCode(gameData) {
+    const { totalScore, answers, maxPossibleScore } = gameData;
+
+    // Calculate all analytics
+    const distribution = calculateStrategyDistribution(answers);
+    const archetype = determineGMArchetype(distribution);
+    const consistency = calculateConsistencyBonus(distribution);
+    const teamPerf = calculateTeamPerformance(answers);
+
+    // Calculate final score with consistency bonus
+    const baseScore = totalScore;
+    const consistencyBonus = consistency.bonus;
+    const adjustedScore = baseScore + consistencyBonus;
+
+    // Build dynamic claim code
+    // Format: BOW-[ARCHETYPE]-[SCORE]-[TEAMGRADE]
+    const teamGrades = Object.values(teamPerf).map(t => t.rating).join('');
+    const scoreCode = String(adjustedScore).padStart(2, '0');
+
+    const claimCode = `${SCORING.baseClaimCode}-${archetype.codePrefix}-${scoreCode}-${teamGrades}`;
+
+    // Calculate XP reward (base + bonuses)
+    let xpReward = SCORING.xpReward;
+
+    // Perfect score bonus (+50 XP)
+    if (totalScore === maxPossibleScore) {
+        xpReward += 50;
+    }
+
+    // Consistency bonus XP
+    xpReward += consistency.bonus * 5;
+
+    // All A or above team ratings bonus (+25 XP)
+    const allHighRatings = Object.values(teamPerf).every(t => t.rating === 'S' || t.rating === 'A');
+    if (allHighRatings) {
+        xpReward += 25;
+    }
+
+    return {
+        code: claimCode,
+        xpReward,
+        breakdown: {
+            baseScore,
+            consistencyBonus,
+            adjustedScore,
+            distribution,
+            archetype,
+            consistency,
+            teamPerf,
+            isUnlocked: adjustedScore >= SCORING.unlockThreshold
+        }
+    };
+}
+
+/**
+ * Generate player strategy fingerprint for analytics
+ * @param {Array} answers - Array of answer objects
+ * @returns {String} Encoded strategy fingerprint
+ */
+function generateStrategyFingerprint(answers) {
+    // Create a pattern string: A=Accelerate, S=Smooth, R=Rebuild
+    const pattern = answers.map(a => {
+        if (a.type === 'accelerate') return 'A';
+        if (a.type === 'smooth') return 'S';
+        if (a.type === 'rebuild') return 'R';
+        return '?';
+    }).join('');
+
+    return pattern;
+}
 
 // Educational content for end screen
 const FRAMEWORK_SUMMARY = {
@@ -389,5 +661,18 @@ const FRAMEWORK_SUMMARY = {
 
 // Export for use in game.js
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { TEAMS_DATA, TEAM_ORDER, SCORING, FRAMEWORK_SUMMARY };
+    module.exports = {
+        TEAMS_DATA,
+        TEAM_ORDER,
+        SCORING,
+        FRAMEWORK_SUMMARY,
+        GM_ARCHETYPES,
+        CONSISTENCY_BONUSES,
+        calculateStrategyDistribution,
+        determineGMArchetype,
+        calculateConsistencyBonus,
+        calculateTeamPerformance,
+        generateDynamicClaimCode,
+        generateStrategyFingerprint
+    };
 }

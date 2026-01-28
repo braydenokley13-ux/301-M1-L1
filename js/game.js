@@ -83,9 +83,22 @@ class SportsCapitalGame {
             efficiencyRating: document.getElementById('efficiency-rating'),
             claimCodeSection: document.getElementById('claim-code-section'),
             claimCode: document.getElementById('claim-code'),
+            xpRewardDisplay: document.getElementById('xp-reward'),
             answersBreakdown: document.getElementById('answers-breakdown'),
             playAgainButton: document.getElementById('play-again'),
-            frameworkSummary: document.getElementById('framework-summary')
+            frameworkSummary: document.getElementById('framework-summary'),
+            // New analytics elements
+            archetypeSection: document.getElementById('archetype-section'),
+            archetypeName: document.getElementById('archetype-name'),
+            archetypeEmoji: document.getElementById('archetype-emoji'),
+            archetypeDescription: document.getElementById('archetype-description'),
+            archetypeStrength: document.getElementById('archetype-strength'),
+            archetypeWeakness: document.getElementById('archetype-weakness'),
+            archetypeFamousGM: document.getElementById('archetype-famous-gm'),
+            teamPerformanceSection: document.getElementById('team-performance-section'),
+            strategyPatternDisplay: document.getElementById('strategy-pattern'),
+            consistencyBonusDisplay: document.getElementById('consistency-bonus'),
+            adjustedScoreDisplay: document.getElementById('adjusted-score')
         };
     }
 
@@ -390,26 +403,39 @@ class SportsCapitalGame {
     showResults() {
         this.gameComplete = true;
 
-        const percentage = Math.round((this.totalScore / this.maxPossibleScore) * 100);
+        // Generate dynamic claim code and analytics
+        const gameData = {
+            totalScore: this.totalScore,
+            answers: this.answers,
+            maxPossibleScore: this.maxPossibleScore
+        };
 
-        // Update score display
+        const claimCodeResult = generateDynamicClaimCode(gameData);
+        this.claimCodeResult = claimCodeResult; // Store for later use
+
+        const { breakdown } = claimCodeResult;
+        const { archetype, consistency, teamPerf, adjustedScore } = breakdown;
+
+        // Update base score display
+        const basePercentage = Math.round((this.totalScore / this.maxPossibleScore) * 100);
         this.elements.finalScore.textContent = `${this.totalScore} / ${this.maxPossibleScore}`;
-        this.elements.scorePercentage.textContent = `${percentage}%`;
+        this.elements.scorePercentage.textContent = `${basePercentage}%`;
 
-        // Determine efficiency rating
+        // Determine efficiency rating based on adjusted score
+        const adjustedPercentage = Math.round((adjustedScore / (this.maxPossibleScore + 5)) * 100);
         let rating = '';
         let ratingClass = '';
 
-        if (percentage >= 90) {
+        if (adjustedPercentage >= 90 || adjustedScore >= 45) {
             rating = 'Hall of Fame GM';
             ratingClass = 'rating-hof';
-        } else if (percentage >= 80) {
+        } else if (adjustedPercentage >= 80 || adjustedScore >= 40) {
             rating = 'Elite GM';
             ratingClass = 'rating-elite';
-        } else if (percentage >= 70) {
+        } else if (adjustedPercentage >= 70 || adjustedScore >= 35) {
             rating = 'Solid GM';
             ratingClass = 'rating-solid';
-        } else if (percentage >= 60) {
+        } else if (adjustedPercentage >= 60 || adjustedScore >= 30) {
             rating = 'Developing GM';
             ratingClass = 'rating-developing';
         } else {
@@ -420,10 +446,22 @@ class SportsCapitalGame {
         this.elements.efficiencyRating.textContent = rating;
         this.elements.efficiencyRating.className = `efficiency-rating ${ratingClass}`;
 
-        // Check if claim code should be unlocked
-        if (this.totalScore >= SCORING.unlockThreshold) {
+        // Build GM Archetype section
+        this.buildArchetypeDisplay(archetype);
+
+        // Build Team Performance section
+        this.buildTeamPerformanceDisplay(teamPerf);
+
+        // Build Strategy Analytics section
+        this.buildStrategyAnalytics(breakdown);
+
+        // Check if claim code should be unlocked (using adjusted score)
+        if (claimCodeResult.breakdown.isUnlocked) {
             this.elements.claimCodeSection.classList.remove('hidden');
-            this.elements.claimCode.textContent = SCORING.claimCode;
+            this.elements.claimCode.textContent = claimCodeResult.code;
+            if (this.elements.xpRewardDisplay) {
+                this.elements.xpRewardDisplay.textContent = claimCodeResult.xpReward;
+            }
             this.showUnlockCelebration();
         } else {
             this.elements.claimCodeSection.classList.add('hidden');
@@ -436,6 +474,117 @@ class SportsCapitalGame {
         this.buildFrameworkSummary();
 
         this.showScreen('results');
+    }
+
+    /**
+     * Build GM Archetype display section
+     */
+    buildArchetypeDisplay(archetype) {
+        if (this.elements.archetypeSection) {
+            this.elements.archetypeSection.classList.remove('hidden');
+        }
+        if (this.elements.archetypeName) {
+            this.elements.archetypeName.textContent = archetype.name;
+        }
+        if (this.elements.archetypeEmoji) {
+            this.elements.archetypeEmoji.textContent = archetype.emoji;
+        }
+        if (this.elements.archetypeDescription) {
+            this.elements.archetypeDescription.textContent = archetype.description;
+        }
+        if (this.elements.archetypeStrength) {
+            this.elements.archetypeStrength.textContent = archetype.strength;
+        }
+        if (this.elements.archetypeWeakness) {
+            this.elements.archetypeWeakness.textContent = archetype.weakness;
+        }
+        if (this.elements.archetypeFamousGM) {
+            this.elements.archetypeFamousGM.textContent = archetype.famousGM;
+        }
+    }
+
+    /**
+     * Build Team Performance display section
+     */
+    buildTeamPerformanceDisplay(teamPerf) {
+        const container = this.elements.teamPerformanceSection;
+        if (!container) return;
+
+        container.innerHTML = '';
+        container.classList.remove('hidden');
+
+        const teamNames = {
+            'los-angeles-lakers': { name: 'Lakers', emoji: '🏀', league: 'NBA' },
+            'boston-red-sox': { name: 'Red Sox', emoji: '⚾', league: 'MLB' },
+            'kansas-city-chiefs': { name: 'Chiefs', emoji: '🏈', league: 'NFL' }
+        };
+
+        Object.entries(teamPerf).forEach(([teamKey, perf]) => {
+            const teamInfo = teamNames[teamKey] || { name: teamKey, emoji: '🏆', league: '' };
+
+            const card = document.createElement('div');
+            card.className = `team-perf-card rating-${perf.rating.toLowerCase()}`;
+
+            card.innerHTML = `
+                <div class="team-perf-header">
+                    <span class="team-perf-emoji">${teamInfo.emoji}</span>
+                    <span class="team-perf-name">${teamInfo.name}</span>
+                    <span class="team-perf-league">${teamInfo.league}</span>
+                </div>
+                <div class="team-perf-score">
+                    <span class="team-perf-points">${perf.score}/${perf.maxScore}</span>
+                    <span class="team-perf-grade">${perf.rating}</span>
+                </div>
+                <div class="team-perf-bar">
+                    <div class="team-perf-fill" style="width: ${perf.percentage}%"></div>
+                </div>
+            `;
+
+            container.appendChild(card);
+        });
+    }
+
+    /**
+     * Build Strategy Analytics display
+     */
+    buildStrategyAnalytics(breakdown) {
+        const { distribution, consistency, adjustedScore, consistencyBonus } = breakdown;
+
+        // Strategy pattern visualization
+        if (this.elements.strategyPatternDisplay) {
+            const pattern = generateStrategyFingerprint(this.answers);
+            const patternHTML = pattern.split('').map(char => {
+                const type = char === 'A' ? 'accelerate' : char === 'S' ? 'smooth' : 'rebuild';
+                const label = char === 'A' ? 'ACC' : char === 'S' ? 'SMO' : 'REB';
+                return `<span class="pattern-item type-${type}" title="${type}">${label}</span>`;
+            }).join('');
+            this.elements.strategyPatternDisplay.innerHTML = patternHTML;
+        }
+
+        // Consistency bonus display
+        if (this.elements.consistencyBonusDisplay) {
+            if (consistencyBonus > 0) {
+                this.elements.consistencyBonusDisplay.innerHTML = `
+                    <span class="bonus-label">${consistency.label}</span>
+                    <span class="bonus-value">+${consistencyBonus} bonus points</span>
+                `;
+                this.elements.consistencyBonusDisplay.classList.remove('hidden');
+            } else {
+                this.elements.consistencyBonusDisplay.innerHTML = `
+                    <span class="bonus-label">${consistency.label}</span>
+                    <span class="bonus-value">No consistency bonus</span>
+                `;
+            }
+        }
+
+        // Adjusted score display
+        if (this.elements.adjustedScoreDisplay) {
+            this.elements.adjustedScoreDisplay.innerHTML = `
+                <span class="adjusted-label">Adjusted Score:</span>
+                <span class="adjusted-value">${adjustedScore}</span>
+                <span class="adjusted-breakdown">(${this.totalScore} base + ${consistencyBonus} bonus)</span>
+            `;
+        }
     }
 
     /**
