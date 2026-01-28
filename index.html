@@ -181,12 +181,72 @@
                     </div>
                 </div>
 
+                <!-- GM Archetype Section -->
+                <div id="archetype-section" class="archetype-section hidden">
+                    <h3>🎭 Your GM Archetype</h3>
+                    <div class="archetype-card">
+                        <div class="archetype-header">
+                            <span id="archetype-emoji" class="archetype-emoji">⚖️</span>
+                            <span id="archetype-name" class="archetype-name">The Pragmatist</span>
+                        </div>
+                        <p id="archetype-description" class="archetype-description">
+                            Description will appear here...
+                        </p>
+                        <div class="archetype-traits">
+                            <div class="archetype-trait">
+                                <span class="trait-label">Strength:</span>
+                                <span id="archetype-strength" class="trait-value">Trait description</span>
+                            </div>
+                            <div class="archetype-trait">
+                                <span class="trait-label">Weakness:</span>
+                                <span id="archetype-weakness" class="trait-value">Trait description</span>
+                            </div>
+                            <div class="archetype-trait">
+                                <span class="trait-label">Real-World Example:</span>
+                                <span id="archetype-famous-gm" class="trait-value">Famous GM name</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Performance Section -->
+                <div class="team-performance-wrapper">
+                    <h3>🏆 Team Performance</h3>
+                    <div id="team-performance-section" class="team-performance-section">
+                        <!-- Team performance cards will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Strategy Analytics Section -->
+                <div class="strategy-analytics">
+                    <h3>📈 Strategy Analytics</h3>
+                    <div class="analytics-row">
+                        <div class="analytics-item">
+                            <span class="analytics-label">Decision Pattern:</span>
+                            <div id="strategy-pattern" class="strategy-pattern">
+                                <!-- Pattern items will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="analytics-row">
+                        <div id="consistency-bonus" class="consistency-bonus">
+                            <!-- Consistency bonus will be inserted here -->
+                        </div>
+                    </div>
+                    <div class="analytics-row">
+                        <div id="adjusted-score" class="adjusted-score-display">
+                            <!-- Adjusted score will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Claim Code Section (shown if score >= threshold) -->
                 <div id="claim-code-section" class="claim-code-section hidden">
                     <h3>🎉 Congratulations! You Unlocked the Code!</h3>
-                    <p>You've proven yourself as an elite GM. Here's your reward:</p>
-                    <div id="claim-code" class="claim-code">BOWCAPITAL2024</div>
-                    <p class="xp-reward">Redeem for <strong>200 XP</strong> in BOW!</p>
+                    <p>You've proven yourself as an elite GM. Here's your unique reward code:</p>
+                    <div id="claim-code" class="claim-code">BOW-SMOOTH-45-AAA</div>
+                    <p class="xp-reward">Redeem for <strong><span id="xp-reward">200</span> XP</strong> in BOW!</p>
+                    <p class="code-explanation">Your code reflects your archetype, score, and team grades!</p>
                 </div>
 
                 <!-- Answers Breakdown -->
