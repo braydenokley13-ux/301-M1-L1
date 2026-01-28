@@ -1,18 +1,26 @@
 /**
  * BOW Sports Capital - Game Logic
  * Interactive sports team management game teaching economic decision-making
+ *
+ * DYNAMIC SCENARIO SYSTEM:
+ * After each choice, the next scenario is selected based on the player's
+ * choice type (accelerate/smooth/rebuild). This means if you traded LeBron,
+ * the next scenario won't assume he's still on the team.
  */
 
 class SportsCapitalGame {
     constructor() {
         // Game state
         this.currentTeamIndex = 0;
-        this.currentScenarioIndex = 0;
+        this.currentScenarioLevel = 0; // 0=opening, 1=level2, 2=level3
         this.totalScore = 0;
         this.maxPossibleScore = 0;
         this.answers = [];
         this.gameStarted = false;
         this.gameComplete = false;
+
+        // Track the last choice type per team for dynamic branching
+        this.lastChoiceType = null;
 
         // DOM elements (will be cached on init)
         this.elements = {};
@@ -118,10 +126,11 @@ class SportsCapitalGame {
     startGame() {
         this.gameStarted = true;
         this.currentTeamIndex = 0;
-        this.currentScenarioIndex = 0;
+        this.currentScenarioLevel = 0;
         this.totalScore = 0;
         this.maxPossibleScore = 0;
         this.answers = [];
+        this.lastChoiceType = null;
 
         this.showScreen('game');
         this.loadTeam();
@@ -138,6 +147,10 @@ class SportsCapitalGame {
             console.error('Team not found:', teamId);
             return;
         }
+
+        // Reset scenario level and last choice for new team
+        this.currentScenarioLevel = 0;
+        this.lastChoiceType = null;
 
         // Apply team theme
         this.applyTeamTheme(team);
@@ -194,18 +207,36 @@ class SportsCapitalGame {
     }
 
     /**
-     * Load current scenario
+     * Get the current scenario based on level and previous choice
+     * This is the core of the dynamic branching system
      */
-    loadScenario() {
+    getCurrentScenario() {
         const teamId = TEAM_ORDER[this.currentTeamIndex];
         const team = TEAMS_DATA[teamId];
-        const scenario = team.scenarios[this.currentScenarioIndex];
+
+        if (this.currentScenarioLevel === 0) {
+            // Opening scenario - same for everyone
+            return team.scenarios.opening;
+        } else if (this.currentScenarioLevel === 1) {
+            // Level 2 - based on choice type from opening scenario
+            return team.scenarios.level2[this.lastChoiceType];
+        } else if (this.currentScenarioLevel === 2) {
+            // Level 3 - based on choice type from level 2 scenario
+            return team.scenarios.level3[this.lastChoiceType];
+        }
+
+        return null;
+    }
+
+    /**
+     * Load current scenario using dynamic branching
+     */
+    loadScenario() {
+        const scenario = this.getCurrentScenario();
 
         if (!scenario) {
-            // Move to next team or end game
+            // No more scenarios for this team, move to next team
             this.currentTeamIndex++;
-            this.currentScenarioIndex = 0;
-
             if (this.currentTeamIndex >= TEAM_ORDER.length) {
                 this.showResults();
                 return;
@@ -255,21 +286,14 @@ class SportsCapitalGame {
      * Update progress bar and text
      */
     updateProgress() {
-        const totalScenarios = TEAM_ORDER.reduce((acc, teamId) => {
-            return acc + TEAMS_DATA[teamId].scenarios.length;
-        }, 0);
-
-        let completedScenarios = 0;
-        for (let i = 0; i < this.currentTeamIndex; i++) {
-            completedScenarios += TEAMS_DATA[TEAM_ORDER[i]].scenarios.length;
-        }
-        completedScenarios += this.currentScenarioIndex;
+        const totalScenarios = TEAM_ORDER.length * 3; // 3 scenarios per team
+        const completedScenarios = (this.currentTeamIndex * 3) + this.currentScenarioLevel;
 
         const progress = (completedScenarios / totalScenarios) * 100;
         this.elements.progressBar.style.width = `${progress}%`;
         this.elements.progressText.textContent = `Decision ${completedScenarios + 1} of ${totalScenarios}`;
 
-        // Update score display (hidden until reveal)
+        // Update score display
         this.elements.currentScoreDisplay.textContent = `Score: ${this.totalScore}`;
     }
 
@@ -292,6 +316,9 @@ class SportsCapitalGame {
 
         this.totalScore += choice.score;
         this.maxPossibleScore += SCORING.maxPointsPerQuestion;
+
+        // Store choice type for dynamic branching
+        this.lastChoiceType = choice.type;
 
         // Show feedback
         this.showFeedback(choice, scenario);
@@ -350,7 +377,7 @@ class SportsCapitalGame {
     celebrateGoodChoice() {
         const celebration = document.createElement('div');
         celebration.className = 'celebration';
-        celebration.innerHTML = '🎉';
+        celebration.innerHTML = '\u{1F389}';
         document.body.appendChild(celebration);
 
         setTimeout(() => {
@@ -359,18 +386,16 @@ class SportsCapitalGame {
     }
 
     /**
-     * Move to next scenario
+     * Move to next scenario using dynamic branching
      */
     nextScenario() {
-        this.currentScenarioIndex++;
+        this.currentScenarioLevel++;
 
-        const teamId = TEAM_ORDER[this.currentTeamIndex];
-        const team = TEAMS_DATA[teamId];
-
-        if (this.currentScenarioIndex >= team.scenarios.length) {
-            // Move to next team
+        if (this.currentScenarioLevel >= 3) {
+            // All 3 scenarios done for this team, move to next
             this.currentTeamIndex++;
-            this.currentScenarioIndex = 0;
+            this.currentScenarioLevel = 0;
+            this.lastChoiceType = null;
 
             if (this.currentTeamIndex >= TEAM_ORDER.length) {
                 this.showResults();
@@ -423,7 +448,9 @@ class SportsCapitalGame {
         // Check if claim code should be unlocked
         if (this.totalScore >= SCORING.unlockThreshold) {
             this.elements.claimCodeSection.classList.remove('hidden');
-            this.elements.claimCode.textContent = SCORING.claimCode;
+            // Pick a random static claim code from the pool
+            const randomCode = CLAIM_CODES[Math.floor(Math.random() * CLAIM_CODES.length)];
+            this.elements.claimCode.textContent = randomCode;
             this.showUnlockCelebration();
         } else {
             this.elements.claimCodeSection.classList.add('hidden');
@@ -523,12 +550,13 @@ class SportsCapitalGame {
      */
     resetGame() {
         this.currentTeamIndex = 0;
-        this.currentScenarioIndex = 0;
+        this.currentScenarioLevel = 0;
         this.totalScore = 0;
         this.maxPossibleScore = 0;
         this.answers = [];
         this.gameStarted = false;
         this.gameComplete = false;
+        this.lastChoiceType = null;
 
         // Reset theme
         document.body.className = '';
