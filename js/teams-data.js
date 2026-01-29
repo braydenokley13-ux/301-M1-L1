@@ -44,22 +44,25 @@ const TEAMS_DATA = {
                         id: "a",
                         text: "Give LeBron the full 2-year max extension ($104M)",
                         type: "accelerate",
-                        score: 3,
-                        consequence: "You're locked into the LeBron era. If he declines, you're paying $52M/year for a diminishing player while over the luxury tax."
+                        score: 4,
+                        payrollChange: 5000000,
+                        consequence: "You're locked into the LeBron era at $52M/year. Lakers finish the season 48-34 as a 6-seed. First round playoff exit after LeBron struggles in Game 7. The luxury tax bill is mounting."
                     },
                     {
                         id: "b",
                         text: "Offer a 1-year deal with a player option for year 2",
                         type: "smooth",
                         score: 5,
-                        consequence: "Smart! You keep LeBron but maintain flexibility. You can reassess after each season based on his performance."
+                        payrollChange: 0,
+                        consequence: "Smart! You keep LeBron at $50M with flexibility. Lakers finish 51-31 as a 5-seed. Second round playoff appearance. You can reassess after this season based on his performance."
                     },
                     {
                         id: "c",
                         text: "Let him walk and fast-track the rebuild around young players",
                         type: "rebuild",
-                        score: 2,
-                        consequence: "Risky! LeBron still has value, and walking away from a top-10 player rarely works. You'd lose years of potential playoff revenue."
+                        score: 3,
+                        payrollChange: -47000000,
+                        consequence: "Bold move! Lakers struggle to 35-47, miss the playoffs. But you freed up $47M in cap space and your young core gets valuable minutes. Ticket sales drop 18% as fans lose interest."
                     }
                 ],
                 explanation: "The SMOOTH approach wins here. LeBron is still elite but father time is undefeated. A flexible contract lets you stay competitive while keeping options open. This is classic 'optionality preservation' - a key concept in capital management."
@@ -68,178 +71,196 @@ const TEAMS_DATA = {
                 accelerate: {
                     id: "lakers-2a",
                     title: "The All-In Trade",
-                    context: "You've locked LeBron into a 2-year max deal. Now it's the trade deadline and you're 5th in the West. A star point guard is available, but the price is TWO future 1st round picks. With LeBron's contract eating $52M/year, those future picks could be very valuable if he declines.",
+                    context: "You've locked LeBron into a 2-year max deal. Now it's the trade deadline and you're 5th in the West (30-22). A star point guard is available, but the price is TWO future 1st round picks. With LeBron's contract eating $52M/year, those future picks could be very valuable if he declines.",
                     choices: [
                         {
                             id: "a",
                             text: "Trade both picks - you've already committed to LeBron, go all the way",
                             type: "accelerate",
-                            score: 3,
-                            consequence: "You're fully committed now. LeBron + AD + a star PG is a title contender, but you have zero safety net if anything goes wrong."
+                            score: 5,
+                            payrollChange: 18000000,
+                            consequence: "You're fully committed! The Big 3 clicks immediately. Lakers finish 52-30 as a 3-seed, advance to the Western Conference Finals before losing in 6 games. But zero draft capital remains."
                         },
                         {
                             id: "b",
                             text: "Trade ONE pick and try to add a solid starter instead of a star",
                             type: "smooth",
-                            score: 5,
-                            consequence: "Smart! You improve the roster without going completely all-in. You keep one future pick as insurance for the post-LeBron era."
+                            score: 4,
+                            payrollChange: 8000000,
+                            consequence: "Smart middle ground! The solid starter helps. Lakers finish 50-32 as a 5-seed. Second round exit in 7 games. You kept one future pick as insurance for the post-LeBron era."
                         },
                         {
                             id: "c",
                             text: "Hold the picks - you're already spending big on LeBron, protect the future",
                             type: "rebuild",
-                            score: 3,
-                            consequence: "Conservative. You've committed to LeBron at max money but won't support him with more talent. That's a half-measure that could waste the investment you already made."
+                            score: 2,
+                            payrollChange: 0,
+                            consequence: "Too conservative! Lakers limp to a 48-34 record as a 7-seed. First round exit again. You committed max money to LeBron but won't give him help. Half-measure wastes the investment."
                         }
                     ],
-                    explanation: "When you've already committed resources to a star (LeBron's max deal), the SMOOTH approach adds support without going reckless. Think of it like investing - once you've made a big bet, you diversify the rest rather than doubling down on the same hand."
+                    explanation: "When you've already committed resources to a star (LeBron's max deal), you need to support that investment! The ACCELERATE approach actually wins here - you're in championship-or-bust mode with an aging LeBron, so going all-in makes sense."
                 },
                 smooth: {
                     id: "lakers-2b",
                     title: "Trade Deadline Opportunity",
-                    context: "LeBron is on a flexible 1-year deal and the Lakers are 5th in the West (34-25). A veteran point guard is available for one future 1st round pick. LeBron's been great this year, but you also have the option to stand pat and wait to see how the playoffs go.",
+                    context: "LeBron is on a flexible 1-year deal and the Lakers are 5th in the West (34-25). A veteran point guard is available for one future 1st round pick. LeBron's been great this year, averaging 26-8-7. Do you upgrade now or wait?",
                     choices: [
                         {
                             id: "a",
                             text: "Make the trade - LeBron is playing well, upgrade for a playoff push",
                             type: "accelerate",
-                            score: 4,
-                            consequence: "Good timing! LeBron's having a strong season and you only gave up one pick. You maximized this window without overpaying."
+                            score: 5,
+                            payrollChange: 12000000,
+                            consequence: "Perfect timing! The veteran PG meshes well with LeBron. Lakers finish 53-29 as a 4-seed. Western Conference Finals appearance (lose in 6). LeBron commits to returning next year."
                         },
                         {
                             id: "b",
                             text: "Trade ONE pick but target a role player instead - save value",
                             type: "smooth",
-                            score: 5,
-                            consequence: "Excellent! You improve the roster with a solid addition while keeping the bigger trade piece for later. Incremental improvements often win championships."
+                            score: 4,
+                            payrollChange: 5000000,
+                            consequence: "Solid move! The role player helps but isn't a game-changer. Lakers finish 51-31 as a 5-seed. Second round exit in 7 games. You preserved flexibility for the offseason."
                         },
                         {
                             id: "c",
                             text: "Stand pat - see how the team performs in the playoffs as-is",
                             type: "rebuild",
-                            score: 3,
-                            consequence: "You saved assets, but you may have wasted a chance to win now. If LeBron leaves after this year, you missed your window."
+                            score: 2,
+                            payrollChange: 0,
+                            consequence: "Too passive! Lakers finish 50-32 as a 6-seed. First round exit in 6 games. LeBron openly questions your commitment to winning. You missed the window."
                         }
                     ],
-                    explanation: "With a flexible LeBron deal, you're in a great position. SMOOTH continues to work - making a measured upgrade without mortgaging the future. You've preserved optionality at every step."
+                    explanation: "With a flexible LeBron deal and strong performance, the ACCELERATE move wins! When a star is playing great and you have cap flexibility, strike while the iron is hot. Timing matters in championship windows."
                 },
                 rebuild: {
                     id: "lakers-2c",
                     title: "The Rebuild Blueprint",
-                    context: "LeBron is gone. You freed up $47M in cap space and have a young core of Reaves and Hachimura. Anthony Davis (31) is still on the roster. He wants to know: are you competing or rebuilding? Other teams are calling about AD.",
+                    context: "LeBron is gone. You freed up $47M in cap space and have a young core of Reaves and Hachimura. Anthony Davis (31) is still on the roster at $55M/year. He wants to know: are you competing or rebuilding? Other teams are offering packages for AD.",
                     choices: [
                         {
                             id: "a",
                             text: "Sign two mid-tier free agents and try to compete around AD immediately",
                             type: "accelerate",
                             score: 2,
-                            consequence: "You let LeBron go to rebuild... then immediately spent the cap space to compete? This sends mixed signals and the mid-tier signings probably aren't enough to contend."
+                            payrollChange: 40000000,
+                            consequence: "Confused strategy! Lakers finish 42-40, barely miss playoffs as a 9-seed. The mid-tier signings don't mesh. AD is frustrated. You're spending big but going nowhere."
                         },
                         {
                             id: "b",
                             text: "Keep AD but be patient - add young complementary pieces through the draft and affordable free agents",
                             type: "smooth",
-                            score: 4,
-                            consequence: "Solid! AD is still a top-15 player. Building around him with young talent while staying financially flexible is a smart transition plan."
+                            score: 5,
+                            payrollChange: 15000000,
+                            consequence: "Patient approach! Lakers finish 38-44, miss playoffs but young core develops. Draft lottery pick (7th overall). AD buys in for the long-term vision. Foundation building."
                         },
                         {
                             id: "c",
                             text: "Trade AD for a package of young players and draft picks - full teardown",
                             type: "rebuild",
                             score: 4,
-                            consequence: "Committed! If you let LeBron walk to rebuild, trading AD for a haul of assets is the logical next step. You'll have a complete set of building blocks for the future."
+                            payrollChange: -35000000,
+                            consequence: "Full commitment! Lakers finish 28-54, secure a top-5 lottery pick. You land 3 future first-rounders and 2 young starters in the AD trade. Complete rebuild underway."
                         }
                     ],
-                    explanation: "After letting LeBron go, there's no single best answer. Keeping AD (SMOOTH) gives you a shortcut to competing again. Trading AD (REBUILD) fully commits to the reset. The worst option is the half-measure of spending to compete without a true superstar duo."
+                    explanation: "After letting LeBron go, the SMOOTH approach wins! Keeping AD while building patiently gives you a top-15 player as an anchor without rushing into bad contracts. Half-measures (spending on mid-tier FAs) waste both time and money."
                 }
             },
             level3: {
                 accelerate: {
                     id: "lakers-3a",
-                    title: "Luxury Tax Explosion",
-                    context: "Your aggressive moves have the Lakers $45M over the luxury tax line. Ownership is demanding you cut at least $20M or face consequences. You have Anthony Davis on a supermax, plus all the players you traded for. The roster is talented but expensive.",
+                    title: "Championship or Bust",
+                    context: "Your aggressive moves paid off! Lakers are 55-27, locked into the 3-seed heading into the playoffs. You're $45M over the luxury tax. The roster is championship-caliber but expensive. This is your window - what's your playoff strategy?",
                     choices: [
                         {
                             id: "a",
-                            text: "Convince ownership to pay the tax - this is a championship roster, don't break it up",
+                            text: "Go for it all - convince ownership to pay luxury tax AND add a buyout player for the playoff run",
                             type: "accelerate",
-                            score: 3,
-                            consequence: "Ownership agrees reluctantly, but warns this is the last season of spending. If you don't win a title, massive changes are coming. High pressure."
+                            score: 5,
+                            payrollChange: 3000000,
+                            consequence: "All-in! The buyout addition provides key depth. Lakers WIN THE NBA CHAMPIONSHIP! LeBron gets ring #5. The tax bill is $78M but ownership celebrates. You built a champion!"
                         },
                         {
                             id: "b",
-                            text: "Trade overpaid role players for cheaper alternatives to trim $20M",
+                            text: "Run with current roster - you're already over the tax, no need to add more",
                             type: "smooth",
-                            score: 5,
-                            consequence: "Smart cap management! You keep your stars and trim the edges. Finding value at the margins is what separates great GMs from good ones."
+                            score: 4,
+                            payrollChange: 0,
+                            consequence: "Solid but cautious. Lakers reach the NBA Finals but lose in 6 games. Depth issues in Games 5-6 prove costly. Still, Finals appearance validates the all-in approach."
                         },
                         {
                             id: "c",
-                            text: "Accept that the window is closing - trade a star for young assets and relief",
+                            text: "Cut salary by trading a role player - reduce the tax bill for ownership",
                             type: "rebuild",
-                            score: 2,
-                            consequence: "You just went all-in and now you're selling? This whiplash approach destroys value. You traded picks FOR players, now you're trading players FOR picks at a loss."
+                            score: 1,
+                            payrollChange: -8000000,
+                            consequence: "Terrible timing! Lakers lose in the Conference Finals. The traded role player was needed. Ownership is furious - you spent all year going all-in then got cold feet at the finish line."
                         }
                     ],
-                    explanation: "When you've already accelerated, SMOOTH management of the details becomes critical. You can't just keep adding payroll forever. Trimming role players while keeping stars is the financial discipline that sustains winning."
+                    explanation: "When you're championship-caliber and already over the tax, ACCELERATE wins! Don't stop short of the goal. The marginal cost of a buyout player is tiny compared to the value of a championship. Finish what you started!"
                 },
                 smooth: {
                     id: "lakers-3b",
-                    title: "Offseason Roster Tuning",
-                    context: "Your balanced approach has the Lakers as a solid playoff team. You're right at the luxury tax line with a competitive roster. The offseason brings options: a quality free agent wing is available, but signing him puts you over the tax. You could also trade a rotation piece to create space for a younger, cheaper player.",
+                    title: "Sustained Success Decision",
+                    context: "Your balanced approach paid off! Lakers finished 54-28 and advanced to the Conference Finals. Now it's the offseason. LeBron (40) wants to run it back. A quality free agent wing is available for 3yr/$60M (puts you $15M over tax). Or trade a piece for youth.",
                     choices: [
                         {
                             id: "a",
-                            text: "Sign the free agent wing and go over the tax - time to push for a title",
+                            text: "Sign the free agent wing and go over the tax - capitalize on the Conference Finals run",
                             type: "accelerate",
-                            score: 4,
-                            consequence: "Good timing to escalate! Your balanced approach gave you a strong foundation. Now a targeted addition could push you over the top without mortgaging the future."
+                            score: 5,
+                            payrollChange: 20000000,
+                            consequence: "Perfect escalation! The wing addition completes the roster. Next season: Lakers go 56-26, reach the NBA Finals (lose in 7). Close, but the foundation is strong for another run."
                         },
                         {
                             id: "b",
                             text: "Trade the rotation piece for a younger player on a cheaper deal - stay flexible",
                             type: "smooth",
-                            score: 5,
-                            consequence: "Masterful! You keep the cap clean while getting younger. This sustainable approach means you can compete for years, not just one season."
+                            score: 4,
+                            payrollChange: -4000000,
+                            consequence: "Sustainable approach! The young player develops nicely. Lakers go 52-30, second round exit. But you're positioned to compete for 3-4 more years without cap issues."
                         },
                         {
                             id: "c",
                             text: "Trade the rotation piece and bank the savings - prepare for next year's free agency class",
                             type: "rebuild",
-                            score: 3,
-                            consequence: "Saving for the future isn't bad, but you have a competitive team NOW. Sometimes being too patient means missing your window entirely."
+                            score: 2,
+                            payrollChange: -12000000,
+                            consequence: "Too cautious! You just reached the Conference Finals and now you're cutting salary? Lakers go 48-34, first round exit. LeBron is frustrated. Window closes."
                         }
                     ],
-                    explanation: "SMOOTH continues to be the optimal strategy for a well-managed team. You can make targeted upgrades without disrupting your foundation. In business, this is 'continuous improvement' vs. 'radical restructuring.'"
+                    explanation: "After a Conference Finals run, ACCELERATE wins! You've built a contender through smart decisions - now is the time to strike. Waiting for 'next year' often means the window closes. Capital management is about knowing when to deploy capital, not just preserve it."
                 },
                 rebuild: {
                     id: "lakers-3c",
-                    title: "Draft Night Decisions",
-                    context: "Your rebuild has given the Lakers three 1st round picks in this year's draft, including a top-5 selection. You also have cap space to sign free agents. The draft has a clear #1 prospect (generational big man) and strong talent throughout the lottery.",
+                    title: "Year 2: Building the Core",
+                    context: "Rebuild Year 2. You have THREE 1st round picks (top-5, #12, #18). Your Year 1 lottery pick showed promise (15ppg rookie). You have $55M in cap space. Do you draft all 3, trade up for a star prospect, or accelerate with free agents?",
                     choices: [
                         {
                             id: "a",
-                            text: "Package picks to trade UP for the #1 overall pick - get the franchise player",
+                            text: "Package all three picks to trade UP for the #1 overall pick (generational prospect)",
                             type: "accelerate",
                             score: 3,
-                            consequence: "Bold! Trading multiple picks for one player is risky. If the #1 pick busts, you've lost your entire rebuild haul. But franchise players change everything."
+                            payrollChange: 12000000,
+                            consequence: "High risk! The #1 pick is talented but raw. Lakers go 32-50 in Year 2. You put all eggs in one basket. If he becomes a superstar, genius move. If he busts, rebuild failed."
                         },
                         {
                             id: "b",
-                            text: "Keep all three picks and draft the best available players at each spot",
+                            text: "Keep all three picks and draft best available - build a young core",
                             type: "smooth",
                             score: 5,
-                            consequence: "Three lottery picks gives you three chances at a star. Diversifying your bets is statistically the smartest approach - one of these players is likely to become an All-Star."
+                            payrollChange: 18000000,
+                            consequence: "Portfolio approach! Lakers draft 3 solid prospects. Team goes 34-48 in Year 2 but the young core (4 lottery picks in 2 years) is promising. Multiple paths to finding a star."
                         },
                         {
                             id: "c",
-                            text: "Trade TWO picks for established young players and draft with the top pick",
+                            text: "Trade two picks for established young players (22-24 years old) and draft with top pick",
                             type: "rebuild",
                             score: 4,
-                            consequence: "Converting draft uncertainty into known talent speeds up the timeline. You keep the best pick and get proven players. Smart risk management."
+                            payrollChange: 25000000,
+                            consequence: "Smart acceleration! You get proven NBA talent plus keep the top pick. Lakers go 38-44 in Year 2. Rebuild timeline shortened by 1-2 years. Playoffs within reach next year."
                         }
                     ],
-                    explanation: "In a rebuild, SMOOTH diversification wins. Multiple high picks create multiple paths to success. In investing, this is portfolio theory - don't put all your capital into one stock, even if it looks like a sure thing."
+                    explanation: "In a rebuild with cap space and draft capital, SMOOTH portfolio building wins! Multiple lottery picks maximize your chances of landing a star. But trading for proven young talent (REBUILD choice) is also smart - it de-risks the draft uncertainty."
                 }
             }
         }
@@ -269,28 +290,31 @@ const TEAMS_DATA = {
             opening: {
                 id: "redsox-1",
                 title: "The Ace Pitcher Decision",
-                context: "Your ace pitcher (35 years old) is hitting free agency. He's been dominant but pitchers decline fast after 35. He wants 4 years/$140M. Your farm system has two top pitching prospects who could be ready in 2 years.",
+                context: "Your ace pitcher (35 years old) is hitting free agency. He's been dominant (2.89 ERA, 11 K/9) but pitchers decline fast after 35. He wants 4 years/$140M. Your farm system has two top pitching prospects who could be ready in 2 years.",
                 choices: [
                     {
                         id: "a",
                         text: "Sign him to the full 4-year/$140M deal",
                         type: "accelerate",
-                        score: 2,
-                        consequence: "Years 1-2 are great, but by years 3-4 you're paying $35M for a declining 38-year-old while your prospects are stuck in the minors."
+                        score: 3,
+                        payrollChange: 35000000,
+                        consequence: "High commitment! Year 1: He goes 16-7, 3.12 ERA, Red Sox finish 91-71. Year 2: 14-9, 3.45 ERA, still solid. But you're locked in for years 3-4 when decline hits and prospects are stuck waiting."
                     },
                     {
                         id: "b",
                         text: "Offer 2 years/$80M with opt-outs - higher AAV, shorter term",
                         type: "smooth",
                         score: 5,
-                        consequence: "Perfect! You get his best years, he gets paid well, and you have flexibility when prospects are ready. Win-win negotiation."
+                        payrollChange: 40000000,
+                        consequence: "Perfect structure! Red Sox go 89-73 with the ace. You get his best years at higher AAV, he's happy with the money, and you have flexibility when prospects are MLB-ready in 2 years."
                     },
                     {
                         id: "c",
                         text: "Let him walk and promote the prospects immediately",
                         type: "rebuild",
                         score: 2,
-                        consequence: "Too aggressive! Prospects often need more development time. You'd be throwing them into the fire while a competitor signs your ace."
+                        payrollChange: -5000000,
+                        consequence: "Too aggressive! Prospects struggle (combined 6.10 ERA). Red Sox finish 78-84, miss playoffs. Fanbase is furious. Meanwhile your ace signs with the Yankees and dominates."
                     }
                 ],
                 explanation: "The SMOOTH approach (shorter term, higher annual value) is the modern way to sign aging stars. You pay for peak performance and maintain roster flexibility. This is like a 'lease vs buy' decision in business."
@@ -299,57 +323,63 @@ const TEAMS_DATA = {
                 accelerate: {
                     id: "redsox-2a",
                     title: "Payroll Pressure",
-                    context: "With your ace locked into a 4-year/$140M deal, your payroll is climbing fast. Now your young star Rafael Devers (27) wants a massive 10-year/$300M extension. If you sign both, you'll blow past the luxury tax threshold. Devers is your franchise cornerstone and could leave as a free agent next year.",
+                    context: "With your ace locked into a 4-year/$140M deal (payroll now $240M), your young star Rafael Devers (27) wants a massive 10-year/$300M extension. If you sign both, you'll be $55M over the luxury tax. Devers could leave as a free agent next year.",
                     choices: [
                         {
                             id: "a",
                             text: "Sign Devers to the full 10-year/$300M - lock in the franchise player at any cost",
                             type: "accelerate",
-                            score: 3,
-                            consequence: "You now have $440M committed to two players over the next 4 years. Payroll flexibility is gone, but you have an ace and a franchise hitter. You're betting on winning big right now."
+                            score: 5,
+                            payrollChange: 30000000,
+                            consequence: "All-in commitment! Red Sox finish 94-68, win AL East. ALCS appearance (lose in 5). $55M over luxury tax but you have ace + franchise bat. Ownership commits to the winning window."
                         },
                         {
                             id: "b",
                             text: "Sign Devers to 7 years/$220M - still a huge commitment but more manageable",
                             type: "smooth",
-                            score: 5,
-                            consequence: "Great negotiation! You keep Devers through his prime years without the risky back-end years. The money saved gives you flexibility to fill other roster holes."
+                            score: 4,
+                            payrollChange: 22000000,
+                            consequence: "Smart structure! Red Sox go 91-71, Wild Card playoff team. You keep Devers through prime years, saved $80M on back-end. Flexibility to fill other holes."
                         },
                         {
                             id: "c",
                             text: "Don't extend Devers yet - revisit at the deadline and potentially trade him if things go south",
                             type: "rebuild",
-                            score: 2,
-                            consequence: "Dangerous! You're risking losing your 27-year-old franchise player for nothing. With the ace deal already eating payroll, losing Devers too would leave you with an expensive, mediocre team."
+                            score: 1,
+                            payrollChange: 0,
+                            consequence: "Disaster! Devers is insulted, plays distracted. Red Sox go 82-80, miss playoffs. He leaves in free agency for nothing. You're stuck with expensive ace and no franchise bat."
                         }
                     ],
-                    explanation: "With a big pitching contract already on the books, SMOOTH contract management for your position players is crucial. You secure Devers but at a manageable structure. Over-committing to too many long-term deals creates 'payroll gridlock' - a common sports management trap."
+                    explanation: "When you've already committed to an expensive ace, you need to support that with a franchise bat! The ACCELERATE approach wins here - Devers at 27 is worth locking up, even if it means going over the luxury tax. Half-measures lead to expensive mediocrity."
                 },
                 smooth: {
                     id: "redsox-2b",
                     title: "The Prospect Dilemma",
-                    context: "Your ace is signed to a smart 2-year deal, and your top pitching prospect is absolutely dominating in AAA - 1.90 ERA, 12 K/9. He could contribute NOW, but rushing him risks injury and stunts development. Meanwhile, a rival is offering a proven All-Star outfielder for your prospect in a trade.",
+                    context: "Your ace is signed to a smart 2-year deal (payroll at $245M). Your top pitching prospect is dominating AAA (1.90 ERA, 12 K/9). A rival offers a proven All-Star outfielder (.295, 28 HR) for your prospect. Red Sox are 52-38 at the deadline.",
                     choices: [
                         {
                             id: "a",
                             text: "Trade the prospect for the proven All-Star outfielder - win now with known talent",
                             type: "accelerate",
-                            score: 3,
-                            consequence: "You get an immediate impact player, but you've traded a potential future ace for a few years of an outfielder. If the prospect becomes elite, this trade haunts you for a decade."
+                            score: 4,
+                            payrollChange: 18000000,
+                            consequence: "Win-now move! The All-Star outfielder delivers (.302, 12 HR in half season). Red Sox finish 92-70, Wild Card round win, ALDS loss. But you traded a potential future ace."
                         },
                         {
                             id: "b",
                             text: "Call up the prospect with an innings limit - let him contribute while protecting his arm",
                             type: "smooth",
                             score: 5,
-                            consequence: "Brilliant management! An innings limit protects the prospect's long-term health while giving you a preview of your future rotation. You keep the asset AND get production."
+                            payrollChange: 1000000,
+                            consequence: "Brilliant! Prospect goes 6-2, 2.87 ERA in 90 innings (protected arm). Red Sox finish 90-72, make playoffs. You kept the asset AND got production. Future ace secured."
                         },
                         {
                             id: "c",
                             text: "Keep the prospect in AAA for the full season - no rush, let him develop fully",
                             type: "rebuild",
-                            score: 3,
-                            consequence: "Patient, but maybe too patient. The kid is dominating AAA and has nothing left to prove there. Extra time in the minors doesn't always help development."
+                            score: 2,
+                            payrollChange: 0,
+                            consequence: "Too conservative! Red Sox finish 86-76, miss Wild Card by 2 games. The kid had nothing left to prove in AAA. You missed the playoffs being overly cautious."
                         }
                     ],
                     explanation: "SMOOTH prospect management (innings limit call-up) gives you the best of both worlds. In business, this is like a 'soft launch' - testing your product in the market with controlled risk rather than going all-in or holding back entirely."
@@ -357,28 +387,31 @@ const TEAMS_DATA = {
                 rebuild: {
                     id: "redsox-2c",
                     title: "Fire Sale or Patience?",
-                    context: "Without your ace, the Red Sox are struggling at 30-42. Your veteran closer (33, dominant numbers) and starting outfielder (32, hitting .290) both have significant trade value. Rival contenders are calling with offers of young prospects. Do you sell now or ride out the season?",
+                    context: "Without your ace, the Red Sox are struggling at 30-42 at the deadline. Your veteran closer (33, 1.95 ERA, 18 saves) and outfielder (32, .290 BA, 15 HR) have trade value. Rivals offer top prospects. Sell or hold?",
                     choices: [
                         {
                             id: "a",
                             text: "Hold everyone - the team could still rally and make the wild card",
                             type: "accelerate",
                             score: 1,
-                            consequence: "At 30-42, your playoff odds are under 3%. You're holding depreciating assets while their trade value is at its peak. Hope isn't a strategy."
+                            payrollChange: 0,
+                            consequence: "Wishful thinking! Red Sox finish 68-94, dead last. Playoff odds were 2%. Closer leaves in free agency (no comp pick). Outfielder's value drops. Total asset waste."
                         },
                         {
                             id: "b",
                             text: "Trade the closer (who has 1 year left) but keep the outfielder (who has 3 years left)",
                             type: "smooth",
                             score: 5,
-                            consequence: "Smart asset management! The closer's value peaks now (contenders need relievers). The outfielder's longer contract means you can trade him later if needed, or build around him."
+                            payrollChange: -8000000,
+                            consequence: "Smart timing! You get 2 prospects for the closer (peak value as rental). Red Sox finish 72-90. Outfielder provides veteran presence for young players. You can trade him later or build around him."
                         },
                         {
                             id: "c",
                             text: "Trade both veterans for the maximum prospect haul - full teardown",
                             type: "rebuild",
                             score: 4,
-                            consequence: "Aggressive but logical. You maximize the return on aging assets. The prospect haul could jumpstart your rebuild by 1-2 years."
+                            payrollChange: -22000000,
+                            consequence: "Full commitment! You land 5 prospects (2 top-100). Red Sox finish 66-96 but the rebuild is accelerated by 1-2 years. You sold high on aging assets."
                         }
                     ],
                     explanation: "SMOOTH selling (trading the right assets at the right time) maximizes value. The closer's value is highest NOW because he's a rental. The outfielder's value holds longer. In finance, this is timing your exits - you don't liquidate your entire portfolio at once."
@@ -500,28 +533,31 @@ const TEAMS_DATA = {
             opening: {
                 id: "chiefs-1",
                 title: "The Kelce Contract",
-                context: "Travis Kelce (34) wants a 3-year/$60M extension. He's the best TE ever but tight ends decline fast after 34. You have a promising young TE on a rookie deal. Kelce and Mahomes have historic chemistry.",
+                context: "Travis Kelce (34) wants a 3-year/$60M extension. He's coming off 93 catches, 984 yards, 5 TDs - still elite. But tight ends decline fast after 34. You have a promising young TE on a rookie deal. Kelce-Mahomes chemistry is legendary.",
                 choices: [
                     {
                         id: "a",
                         text: "Give Kelce the full 3-year/$60M extension",
                         type: "accelerate",
-                        score: 3,
-                        consequence: "You keep the chemistry but might be paying $20M/year for a 36-year-old. The NFL is brutal to aging players."
+                        score: 4,
+                        payrollChange: 20000000,
+                        consequence: "Dynasty commitment! Year 1: Kelce has 89-956-6, Chiefs go 13-4, reach AFC Championship. The chemistry with Mahomes continues. Risk: you're locked in if he declines in years 2-3."
                     },
                     {
                         id: "b",
                         text: "Offer 2 years/$45M with incentives - higher per year, shorter commitment",
                         type: "smooth",
                         score: 5,
-                        consequence: "Perfect structure! Kelce gets paid, you get his best remaining years, and you're not locked into year 3 if he declines."
+                        payrollChange: 22500000,
+                        consequence: "Perfect structure! Kelce accepts. Chiefs go 14-3, win Super Bowl! You get his best years at higher AAV ($22.5M/yr), and you're not locked into year 3 if decline happens."
                     },
                     {
                         id: "c",
                         text: "Let him test free agency and develop the young TE",
                         type: "rebuild",
                         score: 1,
-                        consequence: "Mistake! The Mahomes-Kelce connection is irreplaceable. You're in dynasty mode - this is not the time to rebuild a position."
+                        payrollChange: -3000000,
+                        consequence: "Huge mistake! Young TE isn't ready. Chiefs go 10-7, first round playoff exit. Mahomes publicly questions the move. Kelce signs with Buffalo and torches KC twice."
                     }
                 ],
                 explanation: "SMOOTH wins with aging stars. Pay top dollar for peak years but avoid long-term commitments to 35+ players. The 'shorter term, higher AAV' structure is becoming the NFL standard for veterans."
@@ -530,31 +566,34 @@ const TEAMS_DATA = {
                 accelerate: {
                     id: "chiefs-2a",
                     title: "Draft Capital vs. Win Now",
-                    context: "With Kelce locked in for 3 years at $20M/year, your cap space is tight. Now a Pro Bowl wide receiver is available via trade. Cost: your 1st round pick this year AND next year. Kelce + this WR + Mahomes would be the NFL's most dangerous offense. But two 1st-round picks is a steep price when your cap is already stretched.",
+                    context: "With Kelce locked in for 3 years at $20M/year (cap space down to $1.2M), a Pro Bowl WR is available via trade. Cost: 1st round picks in 2025 AND 2026. The WR ($16M/year) would create cap issues but complete your super-offense.",
                     choices: [
                         {
                             id: "a",
                             text: "Make the trade - Kelce is locked in, complete the super-offense",
                             type: "accelerate",
-                            score: 3,
-                            consequence: "Your offense is elite, but your cap is a ticking time bomb. No draft capital and no cap space means you can't fix any holes that emerge. One injury could unravel everything."
+                            score: 4,
+                            payrollChange: 16000000,
+                            consequence: "All-in! Chiefs go 13-4 with elite offense, reach Super Bowl (lose in OT). But cap is maxed and zero draft capital remains. One injury or bad contract and the dynasty crumbles."
                         },
                         {
                             id: "b",
                             text: "Offer ONE 1st rounder and negotiate - don't overpay when your cap is already tight",
                             type: "smooth",
                             score: 5,
-                            consequence: "Smart negotiation! You might still land the receiver at a discount, and if not, you saved valuable picks for a team that needs cheap rookie contracts to fill roster spots."
+                            payrollChange: 0,
+                            consequence: "Smart negotiation! Trade falls through but you keep picks. You draft a WR in round 1 on rookie deal. Chiefs go 12-5, Conference Championship game. Sustainable cap management."
                         },
                         {
                             id: "c",
                             text: "Keep both picks - you need affordable rookie talent to fill roster gaps around your expensive stars",
                             type: "rebuild",
-                            score: 4,
-                            consequence: "Practical! With so much cap tied up in Kelce and Mahomes, you need cheap rookies to fill the rest of the roster. Draft picks are your lifeblood now."
+                            score: 3,
+                            payrollChange: 3000000,
+                            consequence: "Conservative! Chiefs go 11-6, Wild Card round exit. The rookie picks help depth but take time to develop. With Mahomes in prime, waiting may cost championship windows."
                         }
                     ],
-                    explanation: "When your cap is already stretched (from the Kelce deal), SMOOTH negotiation is critical. You can't keep trading assets when you're already cap-strapped. Sometimes the best trade is the one you don't make - or the one you negotiate down to a fair price."
+                    explanation: "When your cap is stretched, SMOOTH negotiation wins! You can't mortgage the future when you're already cap-strapped. The best move is often the trade you DON'T make - draft picks on rookie deals become critical for cap-constrained contenders."
                 },
                 smooth: {
                     id: "chiefs-2b",

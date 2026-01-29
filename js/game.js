@@ -22,6 +22,9 @@ class SportsCapitalGame {
         // Track the last choice type per team for dynamic branching
         this.lastChoiceType = null;
 
+        // Track current payroll for each team
+        this.teamPayrolls = {};
+
         // DOM elements (will be cached on init)
         this.elements = {};
 
@@ -152,6 +155,11 @@ class SportsCapitalGame {
         this.currentScenarioLevel = 0;
         this.lastChoiceType = null;
 
+        // Initialize payroll tracking for this team if not already set
+        if (!this.teamPayrolls[teamId]) {
+            this.teamPayrolls[teamId] = team.currentPayroll;
+        }
+
         // Apply team theme
         this.applyTeamTheme(team);
 
@@ -185,13 +193,23 @@ class SportsCapitalGame {
      * Update salary cap display based on team/league
      */
     updateSalaryCapDisplay(team) {
+        const teamId = team.id;
+        const currentPayroll = this.teamPayrolls[teamId] || team.currentPayroll;
+
         let capInfo = '';
         if (team.league === 'NBA') {
-            capInfo = `Salary Cap: $${this.formatMoney(team.salaryCap)} | Luxury Tax: $${this.formatMoney(team.luxuryTax)} | Payroll: $${this.formatMoney(team.currentPayroll)}`;
+            const overUnder = currentPayroll > team.luxuryTax ?
+                `$${this.formatMoney(currentPayroll - team.luxuryTax)} OVER TAX` :
+                `$${this.formatMoney(team.luxuryTax - currentPayroll)} under tax`;
+            capInfo = `Salary Cap: $${this.formatMoney(team.salaryCap)} | Luxury Tax: $${this.formatMoney(team.luxuryTax)} | Payroll: $${this.formatMoney(currentPayroll)} (${overUnder})`;
         } else if (team.league === 'MLB') {
-            capInfo = `Luxury Tax Threshold: $${this.formatMoney(team.luxuryTax)} | Current Payroll: $${this.formatMoney(team.currentPayroll)}`;
+            const overUnder = currentPayroll > team.luxuryTax ?
+                `$${this.formatMoney(currentPayroll - team.luxuryTax)} OVER TAX` :
+                `$${this.formatMoney(team.luxuryTax - currentPayroll)} under tax`;
+            capInfo = `Luxury Tax Threshold: $${this.formatMoney(team.luxuryTax)} | Current Payroll: $${this.formatMoney(currentPayroll)} (${overUnder})`;
         } else if (team.league === 'NFL') {
-            capInfo = `Salary Cap: $${this.formatMoney(team.salaryCap)} | Payroll: $${this.formatMoney(team.currentPayroll)} | Cap Space: $${this.formatMoney(team.capSpace)}`;
+            const capSpace = team.salaryCap - currentPayroll;
+            capInfo = `Salary Cap: $${this.formatMoney(team.salaryCap)} | Payroll: $${this.formatMoney(currentPayroll)} | Cap Space: $${this.formatMoney(capSpace)}`;
         }
         this.elements.salaryCapDisplay.textContent = capInfo;
     }
@@ -305,6 +323,11 @@ class SportsCapitalGame {
         const teamId = TEAM_ORDER[this.currentTeamIndex];
         const team = TEAMS_DATA[teamId];
 
+        // Apply payroll change if present
+        if (choice.payrollChange) {
+            this.teamPayrolls[teamId] = (this.teamPayrolls[teamId] || team.currentPayroll) + choice.payrollChange;
+        }
+
         this.answers.push({
             team: team.name,
             scenario: scenario.title,
@@ -405,6 +428,10 @@ class SportsCapitalGame {
             this.loadTeam();
         } else {
             this.showScreen('game');
+            // Update salary cap display before loading next scenario
+            const teamId = TEAM_ORDER[this.currentTeamIndex];
+            const team = TEAMS_DATA[teamId];
+            this.updateSalaryCapDisplay(team);
             this.loadScenario();
         }
     }
@@ -557,6 +584,7 @@ class SportsCapitalGame {
         this.gameStarted = false;
         this.gameComplete = false;
         this.lastChoiceType = null;
+        this.teamPayrolls = {};
 
         // Reset theme
         document.body.className = '';
